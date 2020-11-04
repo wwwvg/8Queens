@@ -26,9 +26,10 @@ namespace _8Queens
 
         void ShowChessBoard()
         {
+            if (chessBoard == null) return;
             chessBoard.Children.Clear();
-            int dim;
-            if(!int.TryParse(dimension.Text, out dim)) return;
+
+            if(!int.TryParse(dimension.Text, out int dim)) return;
 
             chessBoard.Rows = dim;
             chessBoard.Columns = dim;
@@ -48,7 +49,8 @@ namespace _8Queens
                         Data = (Geometry)this.TryFindResource("queenGeometry"),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Stretch,
-                        Stretch = Stretch.UniformToFill,                       
+                        Stretch = Stretch.UniformToFill,
+                        Margin = new Thickness(5, 5, 5, 5),
                     };
                     var viewBox = new Viewbox();
                     viewBox.Child = path;

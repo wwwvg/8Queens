@@ -6,44 +6,32 @@
         
         xmlns:local="clr-namespace:_8Queens"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
-            <ColumnDefinition/>
-        </Grid.ColumnDefinitions>
-
-        <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            
-        </UniformGrid>
-
-        <StackPanel Grid.Column="1">
+        Title="8 Ферзей" Height="600" Width="800" WindowStartupLocation="CenterScreen"
+                Icon="C:\Users\SS\source\repos\8Queens\8Queens\Pictures\bQ.png">
+    <DockPanel LastChildFill="True">
+        
+        <TextBlock Name ="statusBar" DockPanel.Dock="Bottom" Text="Готов!"/>
+        
+        <StackPanel Grid.Column="1" DockPanel.Dock="Right">
             <StackPanel Orientation="Horizontal" Margin="5">
                 <Label Content="Размерность"/>
                 <TextBox Name="dimension" Width="30" VerticalAlignment="Center" Text="8" TextChanged="dimension_TextChanged" />
             </StackPanel>
-            
-            <StackPanel Orientation="Horizontal" Margin="5">
-                <Label Content="Найдено решений:"/>
-                <TextBlock Name="countOfResults" Width="30" VerticalAlignment="Center"/>
-            </StackPanel>
-
-
-                
 
             <Button Name="solveTask" Margin="5">
                 <StackPanel Orientation="Horizontal">
                     <Path Fill="Black" Data="{DynamicResource queenGeometry}" Stretch="Uniform"/>
-
-
                 </StackPanel>
             </Button>
-            
-            <Button Name="showNextSolution" Content="Показать след. решение" Margin="5"/>
 
-            
-            
+            <Button Name="showNextSolution" Content="Показать след. решение" Margin="5"/>
         </StackPanel>
+
         
-    </Grid>
+
+        <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+
+        </UniformGrid>
+
+    </DockPanel>
 </Window>
