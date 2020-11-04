@@ -12,6 +12,7 @@
         
         <TextBlock Name ="statusBar" DockPanel.Dock="Bottom" Text="Готов!"/>
         
+        
         <StackPanel Grid.Column="1" DockPanel.Dock="Right">
             <StackPanel Orientation="Horizontal" Margin="5">
                 <Label Content="Размерность"/>
@@ -27,11 +28,15 @@
             <Button Name="showNextSolution" Content="Показать след. решение" Margin="5"/>
         </StackPanel>
 
-        
 
-        <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <Border BorderBrush="DarkGray" BorderThickness="2">
 
-        </UniformGrid>
+            <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                         Margin="5">
 
+
+            </UniformGrid>
+
+        </Border>
     </DockPanel>
 </Window>

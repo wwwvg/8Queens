@@ -38,14 +38,17 @@ namespace _8Queens
             {
                 for (int j = 0; j < dim; j++)
                 {
-                    var cell1 = new Grid { Background = Brushes.LightGray };
-                    var cell2 = new Grid { Background = Brushes.Brown };
+                    var cell1 = new Grid { Style = TryFindResource("grayGridCell") as Style};
+                    var cell2 = new Grid { Style = TryFindResource("redGridCell") as Style };
+
+                    //var gridRedCellStyle = new Style();
+
 
                     //тестовая установка ферзя в ячейки
                     #region использование векторного ферзя
                     var path = new Path()
                     {
-                        Fill = Brushes.Black,
+                        Fill = Brushes.DarkOrange,
                         Data = (Geometry)this.TryFindResource("queenGeometry"),
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         VerticalAlignment = VerticalAlignment.Stretch,
