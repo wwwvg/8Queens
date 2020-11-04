@@ -27,7 +27,9 @@ namespace _8Queens
         void ShowChessBoard()
         {
             chessBoard.Children.Clear();
-            int dim = int.Parse(dimension.Text);
+            int dim;
+            if(!int.TryParse(dimension.Text, out dim)) return;
+
             chessBoard.Rows = dim;
             chessBoard.Columns = dim;
             
@@ -54,12 +56,6 @@ namespace _8Queens
                     }
                 }
             }
-        }
-
-        private void dimension_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            
-           
         }
 
         private void dimension_LostFocus(object sender, RoutedEventArgs e)
