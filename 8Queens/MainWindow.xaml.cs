@@ -32,15 +32,30 @@ namespace _8Queens
 
             chessBoard.Rows = dim;
             chessBoard.Columns = dim;
-            
+
             for (int i = 0; i < dim; i++)
             {
                 for (int j = 0; j < dim; j++)
                 {
-                    var cell1 = new Rectangle { Fill = Brushes.LightGray };
-                    var cell2 = new Rectangle { Fill = Brushes.Brown };
+                    var cell1 = new Grid { Background = Brushes.LightGray };
+                    var cell2 = new Grid { Background = Brushes.Brown };
 
-                    if(i % 2 == 0)
+                    //тестовая установка ферзя в ячейки
+                    #region использование векторного ферзя
+                    var path = new Path()
+                    {
+                        Fill = Brushes.Black,
+                        Data = (Geometry)this.TryFindResource("queenGeometry"),
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        Stretch = Stretch.UniformToFill,                       
+                    };
+                    var viewBox = new Viewbox();
+                    viewBox.Child = path;
+                    cell1.Children.Add(viewBox);
+                    #endregion
+
+                    if (i % 2 == 0)
                     {
                         if(j % 2 == 0)
                             chessBoard.Children.Add(cell1);
@@ -59,6 +74,11 @@ namespace _8Queens
         }
 
         private void dimension_LostFocus(object sender, RoutedEventArgs e)
+        {
+            ShowChessBoard();
+        }
+
+        private void dimension_TextChanged(object sender, TextChangedEventArgs e)
         {
             ShowChessBoard();
         }

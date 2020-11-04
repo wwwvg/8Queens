@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        
         xmlns:local="clr-namespace:_8Queens"
         mc:Ignorable="d"
         Title="MainWindow" Height="600" Width="800" WindowStartupLocation="CenterScreen">
@@ -19,7 +20,7 @@
         <StackPanel Grid.Column="1">
             <StackPanel Orientation="Horizontal" Margin="5">
                 <Label Content="Размерность"/>
-                <TextBox Name="dimension" Width="30" VerticalAlignment="Center" Text="8" LostFocus="dimension_LostFocus" />
+                <TextBox Name="dimension" Width="30" VerticalAlignment="Center" Text="8" TextChanged="dimension_TextChanged" />
             </StackPanel>
             
             <StackPanel Orientation="Horizontal" Margin="5">
@@ -27,8 +28,21 @@
                 <TextBlock Name="countOfResults" Width="30" VerticalAlignment="Center"/>
             </StackPanel>
 
-            <Button Name="solveTask" Content="Решить" Margin="5" Background="Aqua"/>
+
+                
+
+            <Button Name="solveTask" Margin="5">
+                <StackPanel Orientation="Horizontal">
+                    <Path Fill="Black" Data="{DynamicResource queenGeometry}" Stretch="Uniform"/>
+
+
+                </StackPanel>
+            </Button>
+            
             <Button Name="showNextSolution" Content="Показать след. решение" Margin="5"/>
+
+            
+            
         </StackPanel>
         
     </Grid>

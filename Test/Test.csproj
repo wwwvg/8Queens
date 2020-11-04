@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E82DB7BB-C52A-4C7E-9CB2-1D4F5B144D9A}</ProjectGuid>
+    <ProjectGuid>{0959503F-CE22-4BE5-A0A4-FEC0E5864210}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>_8Queens</RootNamespace>
-    <AssemblyName>8Queens</AssemblyName>
+    <RootNamespace>Test</RootNamespace>
+    <AssemblyName>Test</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -93,18 +93,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Pictures\bQ.png">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Pictures\wQ.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Pictures\bQ2.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Pictures\vectorBQ.svg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
