@@ -12,7 +12,7 @@ namespace TestConsole
         static void Main(string[] args)
         {
             Queen queen = new Queen();
-            queen.SetProhibitedPositions(2);
+            queen.SetProhibitedPositions(4,4);
             queen.printProhibitedPos();
         }
     }
@@ -22,15 +22,15 @@ namespace TestConsole
         const int dim = 8;
         bool[,] prohibitedPositions = new bool[dim, dim];
 
-        public void SetProhibitedPositions(int mi)//main index
+        public void SetProhibitedPositions(int ciY, int ciX)//current index
         {
             for (int y = 0; y < dim; y++)//вертикаль
             {
                 for (int x = 0; x < dim; x++)//горизонталь
                 {
-                    if (x == mi && y+1 < dim) prohibitedPositions[y+1, x] = true; //закрываются вертикальные позиции
-                    if (x == mi && x+1+y  < dim && y+1 <dim ) prohibitedPositions[y+1, x+1+y] = true; //1-я горизонталь
-                    if (x == mi && x-1-y >= 0 && y+1 < dim) prohibitedPositions[y+1, x-1-y] = true; //2-я горизонталь
+                    if (x == ciX && y >= ciY && y+1 < dim) prohibitedPositions[y+1, x] = true; //закрываются вертикальные позиции
+                    if (x == ciX && y >= ciY && x+1+y-ciY  < dim && y+1 <dim ) prohibitedPositions[y+1, x+1+y-ciY] = true; //положительная горизонталь
+                    if (x == ciX && y >= ciY && x-1-y+ciY >= 0 && y+1 < dim) prohibitedPositions[y+1, x-1-y+ciY] = true; //отрицательная горизонталь
                 }
             }
         }
