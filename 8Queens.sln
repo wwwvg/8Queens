@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "8Queens", "8Queens\8Queens.csproj", "{E82DB7BB-C52A-4C7E-9CB2-1D4F5B144D9A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3A03DDB6-CAAD-451B-9C2D-00BD39E84F01}"
-	ProjectSection(SolutionItems) = preProject
-		Tree.cs = Tree.cs
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB}"
 EndProject

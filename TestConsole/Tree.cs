@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CSharpTree
+namespace TestConsole
 {
     public class TreeNode<T> : IEnumerable<TreeNode<T>>
     {
