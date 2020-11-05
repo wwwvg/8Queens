@@ -16,6 +16,8 @@ namespace TestConsole
             queen.SetQueens();
             queen.PrintQueensPositions();
 
+           LinkedList
+
             //queen.SetProhibitedPositions(7, 4);
             //queen.PrintProhibitedPositions();
         }
