@@ -13,8 +13,7 @@ namespace TestConsole
         static void Main(string[] args)
         {
             Queen queen = new Queen(8);
-            queen.SetQueens();
-            queen.PrintQueensPositions();
+            queen.FindQueens();
             
 
             //queen.SetProhibitedPositions(7, 4);
