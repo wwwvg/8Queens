@@ -9,21 +9,15 @@ namespace TestConsole
 {
     class Program
     {
-        static int counter = 0;
         static void Main(string[] args)
         {
+            DateTime time1 = DateTime.Now;
             Queen queen = new Queen(8);
             queen.FindQueens();
-            Console.WriteLine(Queen.childCounter);
-            for (int i = 0; i < queen.forest.Count; i++)
-            {
-                foreach (var node in queen.forest[i])
-                    if (node.Data.Y == queen.dim - 1)
-                        printQueens(queen.dim, node);
-            }
+            DateTime time2 = DateTime.Now;
+            TimeSpan span = time2 - time1;
 
-            //queen.SetProhibitedPositions(7, 4);
-            //queen.PrintProhibitedPositions();
+            Console.WriteLine($"Найдено решений: {queen.foundQueens.Count} за {span.TotalSeconds} секунд");
         }
 
         static void printQueens(int dim, TreeNode<NodeData> treeNode)

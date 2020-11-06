@@ -6,8 +6,24 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
+/*  
+            1) Создаем лес из dim узлов, где узлы расставляеются по-порядку
+            2) Делают ход (записывает позицию в свои данные)
+            3) Записывают запрещенные позиции
+            4) Получают доступные позиции для детей
+            5) Создают детей, в соответствии с доступными позициями. Детям передают координаты и список запрещенных позиций
+            6) Дети уже сами смотрят возможные ходы на основании полученного списка запрещенных позиций
+
+         
+            1) Каждый узел изначально получает список запрещенных позиций
+            2) На основании этого списка получает разрешенные позиции в след. ряду
+            3) Делает ходы по всем позициям (записывает позицию в свои данные)
+            4) Добавляет на основании своего хода запрещенные позиции и передает их дочернему узлу 
+*/
+
 namespace TestConsole
 {
+    #region NodeData
     class NodeData
     {
         public bool[,] ProhibitedPositions { get; set; }
@@ -35,11 +51,12 @@ namespace TestConsole
             return $"{Y }:{X }";
         }
     }
+    #endregion
 
     class Queen
     {
         public List<TreeNode<NodeData>> forest;
-        public TreeNode<NodeData> allPositions;
+        public List<TreeNode<NodeData>> foundQueens = new List<TreeNode<NodeData>>();
         public int dim;//размерность
         public static int childCounter;
 
@@ -47,19 +64,6 @@ namespace TestConsole
         {
             this.dim = dim;
         }
-
-        /*  1) Каждый узел изначально получает список запрещенных позиций
-            2) На основании этого списка получает разрешенные позиции в след. ряду
-            3) Делает ходы по всем позициям (записывает позицию в свои данные)
-            4) Добавляет на основании своего хода запрещенные позиции и передает их дочернему узлу
-        
-            1) Создаем лес из dim узлов, где узлы расставляеются по-порядку
-            2) Делают ход (записывает позицию в свои данные)
-            3) Записывают запрещенные позиции
-            4) Получают доступные позиции для детей
-            5) Создают детей, в соответствии с доступными позициями. Детям передают координаты и список запрещенных позиций
-            6) Дети уже сами смотрят возможные ходы на основании полученного списка запрещенных позиций
-        */
 
         public void FindQueens()
         {
@@ -75,7 +79,6 @@ namespace TestConsole
 
             for (int x = 0; x < forest.Count; x++)
             {
-                if (y == 7) Console.ReadKey();
                 if (y + 1 < dim)
                 {
                     var allowedPos = nextRowAllowedPosition(y + 1, forest[x].Data); // получение доступных позиций в след. ряду
@@ -95,9 +98,8 @@ namespace TestConsole
 
            // var nodeData = new NodeData(y, x, parent.Data.ProhibitedPositions);     //установка координат фигуры и запрещ. позиции
             SetProhibitedPositions(nodeData);   //установка запрещенных позиций
-//PrintProhibitedPositions(nodeData.ProhibitedPositions);
             var child = parent.AddChild(nodeData);   //добавление ребенкаif (y + 1 < dim)
-//if (y == 6) Console.WriteLine("Ура");
+if (y + 1 == dim) foundQueens.Add(child);
             if (y + 1 < dim)
             {
                 var allowedPos = nextRowAllowedPosition(y + 1, child.Data); // получение доступных позиций в след. ряду
@@ -120,16 +122,10 @@ namespace TestConsole
                 if (!nodeData.ProhibitedPositions[y, x])
                     allowedPos.Add(x);
             }
-            //foreach (var item in allowedPos)
-            //{
-            //    Console.Write($"{item }");
-                
-            //}
-            //Console.WriteLine();
-            //Console.ReadKey();
             return allowedPos;
         }
-        /*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
+
+/*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
         public void SetProhibitedPositions(NodeData nodeData)
         {
             int ciY = nodeData.Y;
@@ -153,100 +149,7 @@ namespace TestConsole
             }
         }
 
-        #region бля
-        /*--------------------------------------------------расстановка фигур-------------------------------------------------------------------------------------------*/
-        /*       public void SetQueens(int y, List<Pair> prohibitedPositions = null)
-               {
-                   if(prohibitedPositions == null) 
-                       prohibitedPositions = new List<Pair>();
-                   List<Pair> allowedPositions = getAllowedPositionsInRow(y, ref prohibitedPositions);
-                   if (allowedPositions.Count == 0) return;
-       Console.WriteLine( allowedPositions.Count);
-       //Console.ReadKey();
-
-                   foreach (var position in allowedPositions)
-                   {
-
-       //Console.WriteLine($"{position.Y} {position.X}");
-                       var pair = new Pair { Y = position.Y, X = position.X };
-                       var nodeData = new NodeData { Pair = pair, ProhibitedPositions = prohibitedPositions };
-                       allPositions.AddChild(nodeData);
-       // PrintProhibitedPositions(nodeData.ProhibitedPositions);
-        //Console.ReadKey();
-                       SetProhibitedPositions(nodeData.Pair.Y, nodeData.Pair.X, ref nodeData.ProhibitedPositions);
-                       if (y + 1 < dim)
-                           SetQueens(y+1, ref nodeData.ProhibitedPositions);
-                   }
-
-               }//*/
-        ///*--------------------------------------------------все доступные позиции в ряду-------------------------------------------------------------------------------------------*/
-        //List<Pair> getAllowedPositionsInRow(int y, List<Pair> prohibitedPositions)
-        //{
-        //    var allowedPositions = new List<Pair>();
-
-        //    for (int x = 0; x < dim; x++)//горизонталь
-        //    {
-        //        foreach (var item in prohibitedPositions)
-        //            if (x == item.X && y == item.Y)
-        //                continue;
-        //        var pair = new Pair { Y = y, X = x };
-        //        allowedPositions.Add(pair);
-
-        //        foreach (var item in allowedPositions)    
-        //            Console.Write($"{x} ");
-        //        Console.WriteLine();           
-        //    }
-        //    return allowedPositions;
-        //}
-        ///*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
-        //public void SetProhibitedPositions(int ciY, int ciX, ref List<Pair> prohibitedPositions)
-        //{
-        //    var pair = new Pair() { Y = ciY, X = ciX };
-        //    prohibitedPositions.Add(pair);
-
-        //    for (int y = 0; y < dim; y++)
-        //    {
-        //        pair = new Pair() { Y = y, X = ciX };
-        //        prohibitedPositions.Add(pair);
-        //    }
-
-        //    for (int x = 0; x < dim; x++)
-        //    {
-        //        pair = new Pair() { Y = ciY, X = x }; 
-        //        prohibitedPositions.Add(pair);
-        //    }
-
-        //    for (int y = 0; y < dim; y++)//вертикаль
-        //    {
-        //        for (int x = 0; x < dim; x++)//горизонталь
-        //        {
-        //            if (x == ciX && y >= ciY && x + 1 + y - ciY < dim && y + 1 < dim)
-        //            {
-        //                pair = new Pair() { Y = y + 1, X = x + 1 + y - ciY };
-        //                prohibitedPositions.Add(pair); //закрывается положительная диагональ
-        //            }
-        //            if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < dim)
-        //            {
-        //                pair = new Pair() { Y = y + 1, X = x - 1 - y + ciY };
-        //                prohibitedPositions.Add(pair);//закрывается отрицательная диагональ
-        //            }
-        //        }
-        //    }
-        //}
-
-        /*--------------------------------------------------обнуление всех закрытых позиций-------------------------------------------------------------------------------------------*/
-        //void resetProhibitedPositions()//
-        //{
-        //    for (int y = 0; y < dim; y++)//вертикаль
-        //    {
-        //        for (int x = 0; x < dim; x++)//горизонталь
-        //        {
-        //            prohibitedPositions[y, x] = false;
-        //        }
-        //    }
-        //}
-        #endregion
-        /*--------------------------------------------------печать закрытых позиций-------------------------------------------------------------------------------------*/
+/*--------------------------------------------------печать закрытых позиций-------------------------------------------------------------------------------------*/
         public void PrintProhibitedPositions(bool[,] prohibitedPositions)
         {
             for (int y = 0; y < dim; y++)
@@ -260,12 +163,6 @@ namespace TestConsole
             }
             Console.WriteLine("\n");
            // Console.ReadKey();
-        }
-
-        /*--------------------------------------------------печать ферзей-------------------------------------------------------------------------------------*/
-        public void PrintQueensPositions()
-        {
-            
         }
     }
 }

@@ -11,8 +11,6 @@ namespace TestConsole
         public TreeNode<T> Parent { get; set; }
         public ICollection<TreeNode<T>> Children { get; set; }
 
-        static int counter = 0;
-
         public Boolean IsRoot
         {
             get { return Parent == null; }
@@ -45,15 +43,10 @@ namespace TestConsole
 
         public TreeNode<T> AddChild(T child)
         {
-
-//if (Level == 6) Console.WriteLine(++counter);
-
-
             TreeNode<T> childNode = new TreeNode<T>(child) { Parent = this };
             this.Children.Add(childNode);
 
             this.RegisterChildForSearch(childNode);
-
             return childNode;
         }
 
