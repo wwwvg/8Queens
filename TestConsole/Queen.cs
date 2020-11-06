@@ -1,26 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace TestConsole
 {
-    struct Pair
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-    }
     class NodeData
     {
-        public List<Pair> ProhibitedPositions = new List<Pair>();
-        public Pair Pair { get; set; }
-
+        public bool[,] ProhibitedPositions { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public NodeData(int y, int x, int dim)
+        {
+            Y = y;
+            X = x;
+            ProhibitedPositions = new bool[dim,dim];
+        }
     }
 
     class Queen
     {
-        TreeNode<NodeData> allPositions = new TreeNode<NodeData>(new NodeData());
+        TreeNode<NodeData> allPositions;
         int dim;//размерность
 
         public Queen(int dim)
@@ -47,17 +49,23 @@ namespace TestConsole
             var forest = new List<TreeNode<NodeData>>(dim);
             for (int x = 0; x < dim; x++)
             {
-                var pair = new Pair { Y = y, X = x };
-                var nodeData = new NodeData { Pair = pair };
-                SetProhibitedPositions(nodeData.Pair.Y, nodeData.Pair.X, ref nodeData.ProhibitedPositions);
+                var nodeData = new NodeData(y, x, dim);
+                SetProhibitedPositions(nodeData);
                 var treeNode = new TreeNode<NodeData>(nodeData);
                 forest.Add(treeNode);
             }
 
             for (int x = 0; x < forest.Count; x++)
             {
-                
-                getAllowedPositionsInRow(y, forest[x].Data.ProhibitedPositions);
+                PrintProhibitedPositions(forest[x].Data.ProhibitedPositions);
+                var allowedPos = nextRowAllowedPosition(y+1, forest[x].Data);
+                foreach (var item in allowedPos)
+                {
+                    Console.Write($"{item }");
+                }
+                Console.WriteLine();
+                Console.WriteLine();
+                Console.WriteLine();
 
                 //AddChildren(y+1, forest[x]);
 
@@ -68,90 +76,125 @@ namespace TestConsole
                 //{
                 //    forest[x].AddChild(new NodeData { new Pair { Y = allowedPositions[i].Y, X = allowedPositions[i].X } }); ;
                 //}
-                
+
             }
         }
-
-        /*--------------------------------------------------расстановка фигур-------------------------------------------------------------------------------------------*/
- /*       public void SetQueens(int y, List<Pair> prohibitedPositions = null)
+        List<int> nextRowAllowedPosition(int y, NodeData nodeData)
         {
-            if(prohibitedPositions == null) 
-                prohibitedPositions = new List<Pair>();
-            List<Pair> allowedPositions = getAllowedPositionsInRow(y, ref prohibitedPositions);
-            if (allowedPositions.Count == 0) return;
-Console.WriteLine( allowedPositions.Count);
-//Console.ReadKey();
-
-            foreach (var position in allowedPositions)
-            {
-
-//Console.WriteLine($"{position.Y} {position.X}");
-                var pair = new Pair { Y = position.Y, X = position.X };
-                var nodeData = new NodeData { Pair = pair, ProhibitedPositions = prohibitedPositions };
-                allPositions.AddChild(nodeData);
-// PrintProhibitedPositions(nodeData.ProhibitedPositions);
- //Console.ReadKey();
-                SetProhibitedPositions(nodeData.Pair.Y, nodeData.Pair.X, ref nodeData.ProhibitedPositions);
-                if (y + 1 < dim)
-                    SetQueens(y+1, ref nodeData.ProhibitedPositions);
-            }
-
-        }//*/
-        /*--------------------------------------------------все доступные позиции в ряду-------------------------------------------------------------------------------------------*/
-        List<Pair> getAllowedPositionsInRow(int y, List<Pair> prohibitedPositions)
-        {
-            var allowedPositions = new List<Pair>();
-            
+            var allowedPos = new List<int>();
             for (int x = 0; x < dim; x++)//горизонталь
             {
-                foreach (var item in prohibitedPositions)
-                    if (x == item.X && y == item.Y)
-                        continue;
-                var pair = new Pair { Y = y, X = x };
-                allowedPositions.Add(pair);
-                
-                foreach (var item in allowedPositions)    
-                    Console.Write($"{x} ");
-                Console.WriteLine();           
+                if (!nodeData.ProhibitedPositions[y, x])
+                    allowedPos.Add(x);
             }
-            return allowedPositions;
+            return allowedPos;
         }
         /*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
-        public void SetProhibitedPositions(int ciY, int ciX, ref List<Pair> prohibitedPositions)
+        public void SetProhibitedPositions(NodeData nodeData)
         {
-            var pair = new Pair() { Y = ciY, X = ciX };
-            prohibitedPositions.Add(pair);
+            int ciY = nodeData.Y;
+            int ciX = nodeData.X;
+
+            nodeData.ProhibitedPositions[ciY, ciX] = true;
 
             for (int y = 0; y < dim; y++)
-            {
-                pair = new Pair() { Y = y, X = ciX };
-                prohibitedPositions.Add(pair);
-            }
+                nodeData.ProhibitedPositions[y, ciX] = true;
 
             for (int x = 0; x < dim; x++)
-            {
-                pair = new Pair() { Y = ciY, X = x }; 
-                prohibitedPositions.Add(pair);
-            }
+                nodeData.ProhibitedPositions[ciY, x] = true;
 
             for (int y = 0; y < dim; y++)//вертикаль
             {
                 for (int x = 0; x < dim; x++)//горизонталь
                 {
-                    if (x == ciX && y >= ciY && x + 1 + y - ciY < dim && y + 1 < dim)
-                    {
-                        pair = new Pair() { Y = y + 1, X = x + 1 + y - ciY };
-                        prohibitedPositions.Add(pair); //закрывается положительная диагональ
-                    }
-                    if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < dim)
-                    {
-                        pair = new Pair() { Y = y + 1, X = x - 1 - y + ciY };
-                        prohibitedPositions.Add(pair);//закрывается отрицательная диагональ
-                    }
+                    if (x == ciX && y >= ciY && x + 1 + y - ciY < dim && y + 1 < dim) nodeData.ProhibitedPositions[y + 1, x + 1 + y - ciY] = true; //закрывается положительная диагональ
+                    if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < dim) nodeData.ProhibitedPositions[y + 1, x - 1 - y + ciY] = true; //закрывается отрицательная диагональ
                 }
             }
         }
-                /*--------------------------------------------------обнуление всех закрытых позиций-------------------------------------------------------------------------------------------*/
+
+        #region бля
+        /*--------------------------------------------------расстановка фигур-------------------------------------------------------------------------------------------*/
+        /*       public void SetQueens(int y, List<Pair> prohibitedPositions = null)
+               {
+                   if(prohibitedPositions == null) 
+                       prohibitedPositions = new List<Pair>();
+                   List<Pair> allowedPositions = getAllowedPositionsInRow(y, ref prohibitedPositions);
+                   if (allowedPositions.Count == 0) return;
+       Console.WriteLine( allowedPositions.Count);
+       //Console.ReadKey();
+
+                   foreach (var position in allowedPositions)
+                   {
+
+       //Console.WriteLine($"{position.Y} {position.X}");
+                       var pair = new Pair { Y = position.Y, X = position.X };
+                       var nodeData = new NodeData { Pair = pair, ProhibitedPositions = prohibitedPositions };
+                       allPositions.AddChild(nodeData);
+       // PrintProhibitedPositions(nodeData.ProhibitedPositions);
+        //Console.ReadKey();
+                       SetProhibitedPositions(nodeData.Pair.Y, nodeData.Pair.X, ref nodeData.ProhibitedPositions);
+                       if (y + 1 < dim)
+                           SetQueens(y+1, ref nodeData.ProhibitedPositions);
+                   }
+
+               }//*/
+        ///*--------------------------------------------------все доступные позиции в ряду-------------------------------------------------------------------------------------------*/
+        //List<Pair> getAllowedPositionsInRow(int y, List<Pair> prohibitedPositions)
+        //{
+        //    var allowedPositions = new List<Pair>();
+
+        //    for (int x = 0; x < dim; x++)//горизонталь
+        //    {
+        //        foreach (var item in prohibitedPositions)
+        //            if (x == item.X && y == item.Y)
+        //                continue;
+        //        var pair = new Pair { Y = y, X = x };
+        //        allowedPositions.Add(pair);
+
+        //        foreach (var item in allowedPositions)    
+        //            Console.Write($"{x} ");
+        //        Console.WriteLine();           
+        //    }
+        //    return allowedPositions;
+        //}
+        ///*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
+        //public void SetProhibitedPositions(int ciY, int ciX, ref List<Pair> prohibitedPositions)
+        //{
+        //    var pair = new Pair() { Y = ciY, X = ciX };
+        //    prohibitedPositions.Add(pair);
+
+        //    for (int y = 0; y < dim; y++)
+        //    {
+        //        pair = new Pair() { Y = y, X = ciX };
+        //        prohibitedPositions.Add(pair);
+        //    }
+
+        //    for (int x = 0; x < dim; x++)
+        //    {
+        //        pair = new Pair() { Y = ciY, X = x }; 
+        //        prohibitedPositions.Add(pair);
+        //    }
+
+        //    for (int y = 0; y < dim; y++)//вертикаль
+        //    {
+        //        for (int x = 0; x < dim; x++)//горизонталь
+        //        {
+        //            if (x == ciX && y >= ciY && x + 1 + y - ciY < dim && y + 1 < dim)
+        //            {
+        //                pair = new Pair() { Y = y + 1, X = x + 1 + y - ciY };
+        //                prohibitedPositions.Add(pair); //закрывается положительная диагональ
+        //            }
+        //            if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < dim)
+        //            {
+        //                pair = new Pair() { Y = y + 1, X = x - 1 - y + ciY };
+        //                prohibitedPositions.Add(pair);//закрывается отрицательная диагональ
+        //            }
+        //        }
+        //    }
+        //}
+
+        /*--------------------------------------------------обнуление всех закрытых позиций-------------------------------------------------------------------------------------------*/
         //void resetProhibitedPositions()//
         //{
         //    for (int y = 0; y < dim; y++)//вертикаль
@@ -162,6 +205,7 @@ Console.WriteLine( allowedPositions.Count);
         //        }
         //    }
         //}
+        #endregion
         /*--------------------------------------------------печать закрытых позиций-------------------------------------------------------------------------------------*/
         public void PrintProhibitedPositions(bool[,] prohibitedPositions)
         {
