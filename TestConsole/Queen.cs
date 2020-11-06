@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -18,12 +19,29 @@ namespace TestConsole
             X = x;
             ProhibitedPositions = new bool[dim,dim];
         }
+        public NodeData(int y, int x, int dim, bool[,] prohibitedPositions) : this(y, x, dim)
+        {
+            for (int i = 0; i < dim; i++)
+            {
+                for (int j = 0; j < dim; j++)
+                {
+                    ProhibitedPositions[i, j] = prohibitedPositions[i, j];
+                }
+            }
+            ;
+        }
+        public override string ToString()
+        {
+            return $"{Y }:{X }";
+        }
     }
 
     class Queen
     {
-        TreeNode<NodeData> allPositions;
-        int dim;//размерность
+        public List<TreeNode<NodeData>> forest;
+        public TreeNode<NodeData> allPositions;
+        public int dim;//размерность
+        public static int childCounter;
 
         public Queen(int dim)
         {
@@ -46,39 +64,54 @@ namespace TestConsole
         public void FindQueens()
         {
             int y = 0;
-            var forest = new List<TreeNode<NodeData>>(dim);
-            for (int x = 0; x < dim; x++)
+            forest = new List<TreeNode<NodeData>>(dim);
+            for (int x = 0; x < dim; x++)   //добавление корней в первый ряд
             {
-                var nodeData = new NodeData(y, x, dim);
-                SetProhibitedPositions(nodeData);
-                var treeNode = new TreeNode<NodeData>(nodeData);
-                forest.Add(treeNode);
+                var nodeData = new NodeData(y, x, dim);     //установка координат фигуры и размерности для запрещ. позиций
+                SetProhibitedPositions(nodeData);   //установка запрещенных позиций
+                var treeNode = new TreeNode<NodeData>(nodeData);    //создание корня
+                forest.Add(treeNode);   //добавление корня
             }
 
             for (int x = 0; x < forest.Count; x++)
             {
-                PrintProhibitedPositions(forest[x].Data.ProhibitedPositions);
-                var allowedPos = nextRowAllowedPosition(y+1, forest[x].Data);
-                foreach (var item in allowedPos)
+                if (y == 7) Console.ReadKey();
+                if (y + 1 < dim)
                 {
-                    Console.Write($"{item }");
+                    var allowedPos = nextRowAllowedPosition(y + 1, forest[x].Data); // получение доступных позиций в след. ряду
+                    {
+                        foreach (var itemX in allowedPos)   // для каждой доступной позиции добавляем ребенка
+                        {
+                            AddChildren(y + 1, itemX, forest[x]); // в рекурсивную функцию передаем координаты и запрет. позиции для создания детей
+                        }
+                    }
                 }
-                Console.WriteLine();
-                Console.WriteLine();
-                Console.WriteLine();
-
-                //AddChildren(y+1, forest[x]);
-
-
-                //var allowedPositions = new List<Pair>();
-                //allowedPositions = getAllowedPositionsInRow(y, ref nodeData.ProhibitedPositions);
-                //for (int i = 0; i < allowedPositions.Count; i++)
-                //{
-                //    forest[x].AddChild(new NodeData { new Pair { Y = allowedPositions[i].Y, X = allowedPositions[i].X } }); ;
-                //}
-
             }
         }
+
+        void AddChildren(int y, int x, TreeNode<NodeData> parent)
+        {
+            NodeData nodeData = new NodeData(y, x, dim, parent.Data.ProhibitedPositions);
+
+           // var nodeData = new NodeData(y, x, parent.Data.ProhibitedPositions);     //установка координат фигуры и запрещ. позиции
+            SetProhibitedPositions(nodeData);   //установка запрещенных позиций
+//PrintProhibitedPositions(nodeData.ProhibitedPositions);
+            var child = parent.AddChild(nodeData);   //добавление ребенкаif (y + 1 < dim)
+//if (y == 6) Console.WriteLine("Ура");
+            if (y + 1 < dim)
+            {
+                var allowedPos = nextRowAllowedPosition(y + 1, child.Data); // получение доступных позиций в след. ряду
+                if (allowedPos.Count == 0) return;
+                {
+                    foreach (var itemX in allowedPos)   // для каждой доступной позиции добавляем ребенка
+                    {
+                        childCounter++;
+                        AddChildren(y + 1, itemX, child); // в рекурсивную функцию передаем координаты и запрет. позиции для создания детей
+                    }
+                }
+            }
+        }
+
         List<int> nextRowAllowedPosition(int y, NodeData nodeData)
         {
             var allowedPos = new List<int>();
@@ -87,6 +120,13 @@ namespace TestConsole
                 if (!nodeData.ProhibitedPositions[y, x])
                     allowedPos.Add(x);
             }
+            //foreach (var item in allowedPos)
+            //{
+            //    Console.Write($"{item }");
+                
+            //}
+            //Console.WriteLine();
+            //Console.ReadKey();
             return allowedPos;
         }
         /*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
@@ -219,6 +259,7 @@ namespace TestConsole
                 Console.WriteLine("\n");
             }
             Console.WriteLine("\n");
+           // Console.ReadKey();
         }
 
         /*--------------------------------------------------печать ферзей-------------------------------------------------------------------------------------*/
