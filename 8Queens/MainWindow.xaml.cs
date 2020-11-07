@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -25,6 +26,7 @@ namespace _8Queens
     {
         Grid[,] cells;
         Queen queen;
+     //   int current
 
         public MainWindow()
         {
@@ -95,29 +97,41 @@ namespace _8Queens
         #region Если нажата кнопка искать, то искать решения, а потом вывести первое решение на экран
         void solveTask_Click(object sender, RoutedEventArgs e)
         {
-            statusBar.Text = "";
             if (!int.TryParse(dimension.Text, out int dim)) return;
+            if (chessBoard == null) return;
+
+            for (int y = 0; y < dim; y++)
+            {
+                for (int x = 0; x < dim; x++)
+                {
+                    cells[y, x].Children.Clear();
+                }
+            }
+
+            statusBar.Text = "";
+            
             queen = new Queen(dim);
             queen.FindQueens();
             List<List<int>> list = queen.GetFoundQueens();
             if (list.Count == 0) return;
 
-            int y = 0;
-            foreach (var x in list[0])
+            int yy = 0;
+            foreach (var x in list[new Random().Next(0, list.Count)])
             {
                 var path = new Path()
                 {
-                    Fill = Brushes.DarkOrange,
+                    Fill = Brushes.Black,
                     Data = (Geometry)this.TryFindResource("queenGeometry"),
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Stretch = Stretch.UniformToFill,
                     Margin = new Thickness(5, 5, 5, 5),
+                    Name = "queen",
                 };
 
                 var viewBox = new Viewbox();
                 viewBox.Child = path;
-                cells[y++, x].Children.Add(viewBox);
+                cells[yy++, x].Children.Add(viewBox);
                 
             }
             statusBar.Text = $"Найдено решений: {queen.GetQueensCount()}    " +

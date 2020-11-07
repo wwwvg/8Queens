@@ -50,18 +50,19 @@
                     <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
                         <!--<GradientStop Color="DarkGreen" Offset="0" />
                         <GradientStop Color="Green" Offset="1" />-->
-                        <GradientStop Color="DarkRed" Offset="0" />
-                        <GradientStop Color="Brown" Offset="1" />
+                        <GradientStop Color="DarkGray" Offset="0" />
+                        <GradientStop Color="DarkGray" Offset="1" />
                     </LinearGradientBrush>
                 </Setter.Value>
             </Setter>
+            <Setter Property="Control.Opacity" Value="1"/>
         </Style>
 
         <Style x:Key="grayGridCell">
             <Setter Property="Control.Background">
                 <Setter.Value>
                     <LinearGradientBrush StartPoint="0.5,1" EndPoint="0.5,0">
-                        <GradientStop Color="lightgray" Offset="0" />
+                        <GradientStop Color="White" Offset="0" />
                         <GradientStop Color="White" Offset="1" />
                     </LinearGradientBrush>
                 </Setter.Value>

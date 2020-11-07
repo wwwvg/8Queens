@@ -26,17 +26,18 @@
                 </StackPanel>
             </Button>
 
-            <Button Name="showNextSolution" Content="Показать след. решение" Margin="5"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition/>
+                    <ColumnDefinition/>
+                </Grid.ColumnDefinitions>
+                <Button Name="showPrevSolution" Grid.Column="0" Content="&lt;&lt;" Margin="5" HorizontalAlignment="Stretch"/>
+                <Button Name="showNextSolution" Grid.Column="1" Content=">>" Margin="5" HorizontalAlignment="Stretch"/>
+            </Grid>
         </StackPanel>
 
-
         <Border BorderBrush="DarkGray" BorderThickness="2">
-
-            <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
-                         Margin="5">
-
-
-            </UniformGrid>
+            <UniformGrid Name="chessBoard" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Margin="5"> </UniformGrid>
 
         </Border>
     </DockPanel>
