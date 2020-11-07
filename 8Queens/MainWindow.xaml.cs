@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
-
+using TestConsole;
 /*
     1) При создании шахматной доски помещать ссылки на клетки в двумерный массив для удобства расстановки ферзей. При изменении размерности его пересоздавать.
     2) В классе ферзя добавить метод возвращайщий из списка решений список очередных позиций
@@ -32,12 +23,16 @@ namespace _8Queens
 {
     public partial class MainWindow : Window
     {
+        Grid[,] cells;
+        Queen queen;
+
         public MainWindow()
         {
             InitializeComponent();
             ShowChessBoard();
         }
 
+        #region Показать шахматную доску
         void ShowChessBoard()
         {
             if (chessBoard == null) return;
@@ -48,58 +43,88 @@ namespace _8Queens
             chessBoard.Rows = dim;
             chessBoard.Columns = dim;
 
-            for (int i = 0; i < dim; i++)
+            cells = new Grid[dim, dim];
+            for (int y = 0; y < dim; y++)
             {
-                for (int j = 0; j < dim; j++)
+                for (int x = 0; x < dim; x++)
                 {
-                    var cell1 = new Grid { Style = TryFindResource("grayGridCell") as Style};
-                    var cell2 = new Grid { Style = TryFindResource("redGridCell") as Style };
-
-                    //var gridRedCellStyle = new Style();
-
-
-                    //тестовая установка ферзя в ячейки
-                    #region использование векторного ферзя
-                    var path = new Path()
-                    {
-                        Fill = Brushes.DarkOrange,
-                        Data = (Geometry)this.TryFindResource("queenGeometry"),
-                        HorizontalAlignment = HorizontalAlignment.Stretch,
-                        VerticalAlignment = VerticalAlignment.Stretch,
-                        Stretch = Stretch.UniformToFill,
-                        Margin = new Thickness(5, 5, 5, 5),
-                    };
-                    var viewBox = new Viewbox();
-                    viewBox.Child = path;
-                    cell1.Children.Add(viewBox);
-                    #endregion
-
-                    if (i % 2 == 0)
-                    {
-                        if(j % 2 == 0)
-                            chessBoard.Children.Add(cell1);
-                        else
-                            chessBoard.Children.Add(cell2);
-                    }
-                    else
-                    {
-                        if (j % 2 == 0)
-                            chessBoard.Children.Add(cell2);
-                        else
-                            chessBoard.Children.Add(cell1);
-                    }
+                    cells[y, x] = AddCell(y, x);
                 }
             }
         }
+        #endregion
 
-        private void dimension_LostFocus(object sender, RoutedEventArgs e)
+        #region Установить в ней ячейки
+        Grid AddCell(int y, int x)
         {
-            ShowChessBoard();
+            var cell1 = new Grid { Style = TryFindResource("grayGridCell") as Style };
+            var cell2 = new Grid { Style = TryFindResource("redGridCell") as Style };
+
+            Grid cell;
+            if (y % 2 == 0)
+            {
+                if (x % 2 == 0)
+                    cell = AddCell(cell1);
+                else
+                    cell = AddCell(cell2);
+            }
+            else
+            {
+                if (x % 2 == 0)
+                    cell = AddCell(cell2);
+                else
+                    cell = AddCell(cell1);
+            }
+            return cell;
         }
 
+        Grid AddCell(Grid cell)
+        {
+            chessBoard.Children.Add(cell);
+            return cell;
+        }
+        #endregion
+
+        #region Если изменилась размерность то перерисовать доску
         private void dimension_TextChanged(object sender, TextChangedEventArgs e)
         {
             ShowChessBoard();
         }
+        #endregion
+
+        #region Если нажата кнопка искать, то искать решения, а потом вывести первое решение на экран
+        void solveTask_Click(object sender, RoutedEventArgs e)
+        {
+            statusBar.Text = "";
+            if (!int.TryParse(dimension.Text, out int dim)) return;
+            queen = new Queen(dim);
+            queen.FindQueens();
+            List<List<int>> list = queen.GetFoundQueens();
+            if (list.Count == 0) return;
+
+            int y = 0;
+            foreach (var x in list[0])
+            {
+                var path = new Path()
+                {
+                    Fill = Brushes.DarkOrange,
+                    Data = (Geometry)this.TryFindResource("queenGeometry"),
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Stretch,
+                    Stretch = Stretch.UniformToFill,
+                    Margin = new Thickness(5, 5, 5, 5),
+                };
+
+                var viewBox = new Viewbox();
+                viewBox.Child = path;
+                cells[y++, x].Children.Add(viewBox);
+                
+            }
+            statusBar.Text = $"Найдено решений: {queen.GetQueensCount()}    " +
+                             $"Всего комбинаций: {queen.GetAllCombinationsCount()}    " +
+                             $"Затраченное время: {queen.GetSearchTime()} секунд";
+
+        }
+        #endregion
     }
 }

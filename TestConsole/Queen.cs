@@ -53,9 +53,9 @@ namespace TestConsole
     }
     #endregion
 
-    class Queen
+    public class Queen
     {
-        List<TreeNode<NodeData>> forest;
+        List<TreeNode<NodeData>> forest; 
         List<TreeNode<NodeData>> foundQueens = new List<TreeNode<NodeData>>();
         int childCounter;
         DateTime timeStart;

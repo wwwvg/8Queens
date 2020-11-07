@@ -19,9 +19,10 @@
                 <TextBox Name="dimension" Width="30" VerticalAlignment="Center" Text="8" TextChanged="dimension_TextChanged" />
             </StackPanel>
 
-            <Button Name="solveTask" Margin="5">
+            <Button Name="solveTask" Margin="5" Click="solveTask_Click">
                 <StackPanel Orientation="Horizontal">
-                    <Path Fill="Black" Data="{DynamicResource queenGeometry}" Stretch="Uniform"/>
+                    <Path Name="queenInButton" Fill="DarkOrange" Data="{DynamicResource queenGeometry}" Stretch="Uniform"/>
+                    <!--Style="{StaticResource ResourceKey=queen}"/>-->
                 </StackPanel>
             </Button>
 

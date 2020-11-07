@@ -107,5 +107,11 @@
     <Content Include="Pictures\vectorBQ.svg" />
     <Content Include="Pictures\VectorQueen.svg" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TestConsole\TestConsole.csproj">
+      <Project>{3740df5c-0cac-4d2f-8ae4-07df554a90bb}</Project>
+      <Name>TestConsole</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

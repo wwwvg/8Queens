@@ -68,5 +68,33 @@
             </Setter>
         </Style>
 
+        <Style x:Key="queen">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Window.Loaded">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimation Storyboard.TargetProperty="Opacity" To="0.5" AutoReverse="True" Duration="0:0:3" RepeatBehavior="Forever"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="findingPositions">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Window.Loaded">
+                    <EventTrigger.Actions>
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <ColorAnimation Storyboard.TargetProperty="Background.Color" To="LightPink" AutoReverse="True" Duration="0:0:0.5" RepeatBehavior="Forever"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger.Actions>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
     </Application.Resources>
 </Application>
