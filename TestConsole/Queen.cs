@@ -111,8 +111,40 @@ namespace TestConsole
                 forest.Add(treeNode);   //добавление корня
             }
 
-            for (int x = 0; x < forest.Count; x++)
+
+            //Parallel.Invoke(() => AddRoots(0, 0),
+            //                () => AddRoots(1, 1),
+            //                () => AddRoots(2, 2),
+            //                () => AddRoots(3, 3),
+            //                () => AddRoots(4, 4),
+            //                () => AddRoots(5, 8)
+            //                );
+
+            AddRoots(0, forest.Count);
+
+            //for (int x = 0; x < forest.Count; x++)
+            //{
+
+            //    if (y + 1 < Dim)
+            //    {
+            //        var allowedPos = nextRowAllowedPosition(y + 1, forest[x].Data); // получение доступных позиций в след. ряду
+            //        {
+            //            foreach (var itemX in allowedPos)   // для каждой доступной позиции добавляем ребенка
+            //            {
+            //                AddChildren(y + 1, itemX, forest[x]); // в рекурсивную функцию передаем координаты и запрет. позиции для создания детей
+            //            }
+            //        }
+            //    }
+            //}
+            timeStop = DateTime.Now;
+        }
+
+        void AddRoots(int begin, int end)
+        {
+            int y = 0;
+            for (int x = begin; x < end; x++)
             {
+
                 if (y + 1 < Dim)
                 {
                     var allowedPos = nextRowAllowedPosition(y + 1, forest[x].Data); // получение доступных позиций в след. ряду
@@ -124,9 +156,8 @@ namespace TestConsole
                     }
                 }
             }
-            timeStop = DateTime.Now;
         }
-/*--------------------------------------------------рекурсивная функция заполняющая дерево всех решений-------------------------------------------------------------------------------------*/
+        /*--------------------------------------------------рекурсивная функция заполняющая дерево всех решений-------------------------------------------------------------------------------------*/
         void AddChildren(int y, int x, TreeNode<NodeData> parent)
         {            
             NodeData nodeData = new NodeData(y, x, Dim, parent.Data.ProhibitedPositions);

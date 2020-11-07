@@ -9,6 +9,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{3A03DDB6-C
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsole", "TestConsole\TestConsole.csproj", "{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ParallelTask", "ParallelTask\ParallelTask.csproj", "{4413DF93-18A1-4CEC-A3CC-B5581863EB3D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -23,12 +25,17 @@ Global
 		{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4413DF93-18A1-4CEC-A3CC-B5581863EB3D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4413DF93-18A1-4CEC-A3CC-B5581863EB3D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4413DF93-18A1-4CEC-A3CC-B5581863EB3D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4413DF93-18A1-4CEC-A3CC-B5581863EB3D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{3740DF5C-0CAC-4D2F-8AE4-07DF554A90BB} = {3A03DDB6-CAAD-451B-9C2D-00BD39E84F01}
+		{4413DF93-18A1-4CEC-A3CC-B5581863EB3D} = {3A03DDB6-CAAD-451B-9C2D-00BD39E84F01}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5041C41B-12B0-4559-BB36-DD5E63C563EE}

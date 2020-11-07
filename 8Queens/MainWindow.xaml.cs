@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
@@ -26,7 +28,9 @@ namespace _8Queens
     {
         Grid[,] cells;
         Queen queen;
-     //   int current
+        int currentQueenIndex = 0;
+        int dim;
+        List<List<int>> list;
 
         public MainWindow()
         {
@@ -40,7 +44,7 @@ namespace _8Queens
             if (chessBoard == null) return;
             chessBoard.Children.Clear();
 
-            if(!int.TryParse(dimension.Text, out int dim)) return;
+            if(!int.TryParse(dimension.Text, out dim)) return;
 
             chessBoard.Rows = dim;
             chessBoard.Columns = dim;
@@ -97,26 +101,38 @@ namespace _8Queens
         #region Если нажата кнопка искать, то искать решения, а потом вывести первое решение на экран
         void solveTask_Click(object sender, RoutedEventArgs e)
         {
-            if (!int.TryParse(dimension.Text, out int dim)) return;
-            if (chessBoard == null) return;
-
-            for (int y = 0; y < dim; y++)
-            {
-                for (int x = 0; x < dim; x++)
-                {
-                    cells[y, x].Children.Clear();
-                }
-            }
-
             statusBar.Text = "";
-            
-            queen = new Queen(dim);
+            currentQueenIndex = 0;
+
+            int notMoreThan = 0;
+            if(int.TryParse(findNotMoreThan.Text, out notMoreThan))
+                queen = new Queen(dim, notMoreThan);
+            else
+                queen = new Queen(dim);
+
             queen.FindQueens();
-            List<List<int>> list = queen.GetFoundQueens();
+            
+            list = queen.GetFoundQueens();
             if (list.Count == 0) return;
 
+            showQueens();
+
+
+            statusBar.Text = $"Найдено решений: {queen.GetQueensCount()}    " +
+                             $"Всего комбинаций: {queen.GetAllCombinationsCount()}    " +
+                             $"Затраченное время: {queen.GetSearchTime()} секунд";
+
+        }
+        #endregion
+
+        void showQueens()
+        {
+            for (int y = 0; y < dim; y++)
+                for (int x = 0; x < dim; x++)
+                    cells[y, x].Children.Clear();
+
             int yy = 0;
-            foreach (var x in list[new Random().Next(0, list.Count)])
+            foreach (var x in list[currentQueenIndex])
             {
                 var path = new Path()
                 {
@@ -126,19 +142,29 @@ namespace _8Queens
                     VerticalAlignment = VerticalAlignment.Stretch,
                     Stretch = Stretch.UniformToFill,
                     Margin = new Thickness(5, 5, 5, 5),
-                    Name = "queen",
                 };
 
-                var viewBox = new Viewbox();
-                viewBox.Child = path;
+                var viewBox = new Viewbox{ Child = path };
                 cells[yy++, x].Children.Add(viewBox);
-                
             }
-            statusBar.Text = $"Найдено решений: {queen.GetQueensCount()}    " +
-                             $"Всего комбинаций: {queen.GetAllCombinationsCount()}    " +
-                             $"Затраченное время: {queen.GetSearchTime()} секунд";
-
         }
-        #endregion
+
+        private void showPrevSolution_Click(object sender, RoutedEventArgs e)
+        {
+            if (queen == null) return;
+            if (--currentQueenIndex == -1) 
+                currentQueenIndex = queen.GetFoundQueens().Count - 1;
+            showQueens();
+            textCurrentIndex.Text = (currentQueenIndex + 1).ToString();
+        }
+
+        private void showNextSolution_Click(object sender, RoutedEventArgs e)
+        {
+            if (queen == null) return;
+            if (++currentQueenIndex == queen.GetFoundQueens().Count) 
+                currentQueenIndex = 0;
+            showQueens();
+            textCurrentIndex.Text = (currentQueenIndex + 1).ToString();
+        }
     }
 }
