@@ -11,25 +11,23 @@ namespace TestConsole
     {
         static void Main(string[] args)
         {
-            DateTime time1 = DateTime.Now;
             Queen queen = new Queen(8);
             queen.FindQueens();
-            DateTime time2 = DateTime.Now;
-            TimeSpan span = time2 - time1;
 
-            Console.WriteLine($"Найдено решений: {queen.foundQueens.Count} за {span.TotalSeconds} секунд");
-        }
+            Console.WriteLine($"Найдено решений: {queen.GetQueensCount()}");
+            Console.WriteLine($"Всего комбинаций: {queen.GetAllCombinationsCount()}");
+            Console.WriteLine($"Затраченное время: {queen.GetSearchTime()} секунд");
 
-        static void printQueens(int dim, TreeNode<NodeData> treeNode)
-        {
-            StringBuilder sb = new StringBuilder();
-            do
+            int i = 0;
+            foreach (var list in queen.GetFoundQueens())
             {
-                Console.WriteLine(treeNode);
-                treeNode = treeNode.Parent;
+                Console.Write($"{++i}) ");
+                foreach (var item in list)
+                {
+                    Console.Write($"{item} ");
+                }
+                Console.WriteLine("\n");
             }
-            while (treeNode != null) ;
-            Console.WriteLine("---");
         }
     }
 }

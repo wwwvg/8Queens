@@ -55,23 +55,57 @@ namespace TestConsole
 
     class Queen
     {
-        public List<TreeNode<NodeData>> forest;
-        public List<TreeNode<NodeData>> foundQueens = new List<TreeNode<NodeData>>();
-        public int dim;//размерность
-        public static int childCounter;
+        List<TreeNode<NodeData>> forest;
+        List<TreeNode<NodeData>> foundQueens = new List<TreeNode<NodeData>>();
+        int childCounter;
+        DateTime timeStart;
+        DateTime timeStop;
 
-        public Queen(int dim)
+        public int Dim { get; }//размерность
+        public int FindNotMoreThan { get; }
+
+        public Queen(int dim = 8, int findNotMoreThan = int.MaxValue)
         {
-            this.dim = dim;
+            Dim = dim;
+            FindNotMoreThan = findNotMoreThan;
         }
+
+        #region Возврат результата и статистики
+        public int GetQueensCount() => foundQueens.Count;
+
+        public int GetAllCombinationsCount() => childCounter + Dim;
+
+        public double GetSearchTime() => (timeStop - timeStart).TotalSeconds;
+
+        public List<List<int>> GetFoundQueens()
+        {
+            var list = new List<List<int>>();   
+            foreach (var item in foundQueens)  // item = TreeNode<NodeData>
+            {
+                var treeNode = item;
+                var listX = new List<int>();
+                do
+                {
+                    listX.Add(treeNode.Data.X);
+                    treeNode = treeNode.Parent;
+                }
+                while (treeNode != null);
+
+                list.Add(listX);
+            }
+            return list;
+        }
+        #endregion
+
 
         public void FindQueens()
         {
+            timeStart = DateTime.Now;
             int y = 0;
-            forest = new List<TreeNode<NodeData>>(dim);
-            for (int x = 0; x < dim; x++)   //добавление корней в первый ряд
+            forest = new List<TreeNode<NodeData>>(Dim);
+            for (int x = 0; x < Dim; x++)   //добавление корней в первый ряд
             {
-                var nodeData = new NodeData(y, x, dim);     //установка координат фигуры и размерности для запрещ. позиций
+                var nodeData = new NodeData(y, x, Dim);     //установка координат фигуры и размерности для запрещ. позиций
                 SetProhibitedPositions(nodeData);   //установка запрещенных позиций
                 var treeNode = new TreeNode<NodeData>(nodeData);    //создание корня
                 forest.Add(treeNode);   //добавление корня
@@ -79,7 +113,7 @@ namespace TestConsole
 
             for (int x = 0; x < forest.Count; x++)
             {
-                if (y + 1 < dim)
+                if (y + 1 < Dim)
                 {
                     var allowedPos = nextRowAllowedPosition(y + 1, forest[x].Data); // получение доступных позиций в след. ряду
                     {
@@ -90,34 +124,38 @@ namespace TestConsole
                     }
                 }
             }
+            timeStop = DateTime.Now;
         }
-
+/*--------------------------------------------------рекурсивная функция заполняющая дерево всех решений-------------------------------------------------------------------------------------*/
         void AddChildren(int y, int x, TreeNode<NodeData> parent)
-        {
-            NodeData nodeData = new NodeData(y, x, dim, parent.Data.ProhibitedPositions);
+        {            
+            NodeData nodeData = new NodeData(y, x, Dim, parent.Data.ProhibitedPositions);
 
-           // var nodeData = new NodeData(y, x, parent.Data.ProhibitedPositions);     //установка координат фигуры и запрещ. позиции
             SetProhibitedPositions(nodeData);   //установка запрещенных позиций
-            var child = parent.AddChild(nodeData);   //добавление ребенкаif (y + 1 < dim)
-if (y + 1 == dim) foundQueens.Add(child);
-            if (y + 1 < dim)
+            var child = parent.AddChild(nodeData);   //добавление ребенка if (y + 1 < dim)
+
+            if (y + 1 == Dim) foundQueens.Add(child); //добавил решение
+             
+            if (FindNotMoreThan == GetQueensCount()) return; //если указано, что искать не более N решений
+
+            if (y + 1 < Dim)
             {
+                childCounter++;
                 var allowedPos = nextRowAllowedPosition(y + 1, child.Data); // получение доступных позиций в след. ряду
                 if (allowedPos.Count == 0) return;
                 {
                     foreach (var itemX in allowedPos)   // для каждой доступной позиции добавляем ребенка
                     {
-                        childCounter++;
                         AddChildren(y + 1, itemX, child); // в рекурсивную функцию передаем координаты и запрет. позиции для создания детей
                     }
                 }
             }
         }
-
+/*--------------------------------------------------дать открытые позиции в след. ряду-------------------------------------------------------------------------------------*/
         List<int> nextRowAllowedPosition(int y, NodeData nodeData)
         {
             var allowedPos = new List<int>();
-            for (int x = 0; x < dim; x++)//горизонталь
+            for (int x = 0; x < Dim; x++)//горизонталь
             {
                 if (!nodeData.ProhibitedPositions[y, x])
                     allowedPos.Add(x);
@@ -126,35 +164,35 @@ if (y + 1 == dim) foundQueens.Add(child);
         }
 
 /*--------------------------------------------------закрыть позиции которые бьет фигура-------------------------------------------------------------------------------------*/
-        public void SetProhibitedPositions(NodeData nodeData)
+        void SetProhibitedPositions(NodeData nodeData)
         {
             int ciY = nodeData.Y;
             int ciX = nodeData.X;
 
             nodeData.ProhibitedPositions[ciY, ciX] = true;
 
-            for (int y = 0; y < dim; y++)
+            for (int y = 0; y < Dim; y++)
                 nodeData.ProhibitedPositions[y, ciX] = true;
 
-            for (int x = 0; x < dim; x++)
+            for (int x = 0; x < Dim; x++)
                 nodeData.ProhibitedPositions[ciY, x] = true;
 
-            for (int y = 0; y < dim; y++)//вертикаль
+            for (int y = 0; y < Dim; y++)//вертикаль
             {
-                for (int x = 0; x < dim; x++)//горизонталь
+                for (int x = 0; x < Dim; x++)//горизонталь
                 {
-                    if (x == ciX && y >= ciY && x + 1 + y - ciY < dim && y + 1 < dim) nodeData.ProhibitedPositions[y + 1, x + 1 + y - ciY] = true; //закрывается положительная диагональ
-                    if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < dim) nodeData.ProhibitedPositions[y + 1, x - 1 - y + ciY] = true; //закрывается отрицательная диагональ
+                    if (x == ciX && y >= ciY && x + 1 + y - ciY < Dim && y + 1 < Dim) nodeData.ProhibitedPositions[y + 1, x + 1 + y - ciY] = true; //закрывается положительная диагональ
+                    if (x == ciX && y >= ciY && x - 1 - y + ciY >= 0 && y + 1 < Dim) nodeData.ProhibitedPositions[y + 1, x - 1 - y + ciY] = true; //закрывается отрицательная диагональ
                 }
             }
         }
 
 /*--------------------------------------------------печать закрытых позиций-------------------------------------------------------------------------------------*/
-        public void PrintProhibitedPositions(bool[,] prohibitedPositions)
+        void PrintProhibitedPositions(bool[,] prohibitedPositions)
         {
-            for (int y = 0; y < dim; y++)
+            for (int y = 0; y < Dim; y++)
             {
-                for (int x = 0; x < dim; x++)
+                for (int x = 0; x < Dim; x++)
                 {
                     string isProhibited = prohibitedPositions[y, x] ? "#" : ".";
                     Console.Write($"{isProhibited}    ");
