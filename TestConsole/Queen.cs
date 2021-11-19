@@ -142,7 +142,7 @@ namespace TestConsole
             
             var child = parent.AddChild(nodeData);   //добавление ребенка if (y + 1 < dim)
 
-            if (y + 1 == Dim) foundQueens.Add(child); //добавил решение
+/*=====>*/  if (y + 1 == Dim) foundQueens.Add(child); //добавил решение
              
             if (FindNotMoreThan == GetQueensCount()) return; //если указано, что искать не более N решений
 
