@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:_8Queens"
         mc:Ignorable="d"
         Title="8 Ферзей" Height="600" Width="800" WindowStartupLocation="CenterScreen"
-                Icon="C:\Users\SS\source\repos\8Queens\8Queens\Pictures\bQ.png">
+                Icon="\Pictures\wQ.png">
     <DockPanel LastChildFill="True">
         
         <TextBlock Name ="statusBar" DockPanel.Dock="Bottom" Text="Готов!"/>
