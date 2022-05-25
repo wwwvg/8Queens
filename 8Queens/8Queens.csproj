@@ -55,6 +55,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Queen.cs" />
+    <Compile Include="Tree.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -106,12 +108,6 @@
   <ItemGroup>
     <Content Include="Pictures\vectorBQ.svg" />
     <Content Include="Pictures\VectorQueen.svg" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\TestConsole\TestConsole.csproj">
-      <Project>{3740df5c-0cac-4d2f-8ae4-07df554a90bb}</Project>
-      <Name>TestConsole</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

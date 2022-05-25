@@ -31,6 +31,8 @@ namespace _8Queens
         int currentQueenIndex = 0;
         int dim;
         List<List<int>> list;
+        CancellationTokenSource _cancelTokenSource;
+        CancellationToken _token;
 
         public MainWindow()
         {
@@ -99,33 +101,67 @@ namespace _8Queens
         #endregion
 
         #region Если нажата кнопка искать, то искать решения, а потом вывести первое решение на экран
-        void solveTask_Click(object sender, RoutedEventArgs e)
+        async void ButtonStart_Click(object sender, RoutedEventArgs e)
         {
+            _cancelTokenSource = new CancellationTokenSource();
+            _token = _cancelTokenSource.Token;
+            ButtonStop.Visibility = Visibility.Visible;
             statusBar.Text = "";
-            currentQueenIndex = 0;
+            string text = await FindQueens();
+            statusBar.Text = text;
+            ButtonStop.Visibility = Visibility.Hidden;
+            ButtonStart.IsEnabled = true;
+            if (queen.GetQueensCount() != 0)
+                ShowQueens();
 
-            int notMoreThan = 0;
-            if(int.TryParse(findNotMoreThan.Text, out notMoreThan))
-                queen = new Queen(dim, notMoreThan);
-            else
-                queen = new Queen(dim);
-
-            queen.FindQueens();
-            
-            list = queen.GetFoundQueens();
-            if (list.Count == 0) return;
-
-            showQueens();
-
-
-            statusBar.Text = $"Найдено решений: {queen.GetQueensCount()}    " +
-                             $"Всего комбинаций: {queen.GetAllCombinationsCount()}    " +
-                             $"Затраченное время: {queen.GetSearchTime()} секунд";
-
+            _cancelTokenSource.Dispose();
         }
         #endregion
 
-        void showQueens()
+        void Stop_Click(object sender, RoutedEventArgs e)
+        {
+            _cancelTokenSource.Cancel();
+        }
+
+        async Task<string> FindQueens()
+        {
+            ButtonStart.IsEnabled = false;
+            currentQueenIndex = 0;
+            int notMoreThan = 0;
+            if(int.TryParse(findNotMoreThan.Text, out notMoreThan))
+                queen = new Queen(_token, dim, notMoreThan);
+            else
+                queen = new Queen(_token, dim);
+
+            try
+            {
+                return await Task.Run(() =>
+                {
+                    queen.FindQueens();
+                    list = queen.GetFoundQueens();
+                    if (list.Count == 0) return "Решений не найдено!";
+                    string s = "";
+                    if (_cancelTokenSource.IsCancellationRequested)
+                        s = "Задание прервано/";
+
+                    return $"{s}Найдено решений: {queen.GetQueensCount()}    " +
+                                     $"Всего комбинаций: {queen.GetAllCombinationsCount()}    " +
+                                     $"Затраченное время: {queen.GetSearchTime()} секунд";
+                }, _token);
+            }
+            catch (OperationCanceledException ex)
+            {
+                Dispatcher.Invoke((Action)delegate
+                {
+                    ButtonStop.Visibility = Visibility.Hidden;
+                    ButtonStart.IsEnabled = true;
+                    
+                });
+            }
+            return "";
+        }
+
+        void ShowQueens()
         {
             for (int y = 0; y < dim; y++)
                 for (int x = 0; x < dim; x++)
@@ -154,7 +190,7 @@ namespace _8Queens
             if (queen == null) return;
             if (--currentQueenIndex == -1) 
                 currentQueenIndex = queen.GetFoundQueens().Count - 1;
-            showQueens();
+            ShowQueens();
             textCurrentIndex.Text = (currentQueenIndex + 1).ToString();
         }
 
@@ -163,7 +199,7 @@ namespace _8Queens
             if (queen == null) return;
             if (++currentQueenIndex == queen.GetFoundQueens().Count) 
                 currentQueenIndex = 0;
-            showQueens();
+            ShowQueens();
             textCurrentIndex.Text = (currentQueenIndex + 1).ToString();
         }
     }

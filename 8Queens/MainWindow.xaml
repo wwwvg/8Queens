@@ -23,12 +23,13 @@
                 <TextBox Name="findNotMoreThan" Width="30" VerticalAlignment="Center" Text=""/>
             </StackPanel>
 
-            <Button Name="solveTask" Margin="5" Click="solveTask_Click">
+            <Button Name="ButtonStart" Margin="5" Click="ButtonStart_Click">
                 <StackPanel Orientation="Horizontal">
                     <Path Name="queenInButton" Fill="DarkCyan" Data="{DynamicResource queenGeometry}" Stretch="Uniform"/>
                     <!--Style="{StaticResource ResourceKey=queen}"/>-->
                 </StackPanel>
             </Button>
+            <Button x:Name="ButtonStop" Width="100" Click="Stop_Click" Visibility="Hidden">Stop</Button>
 
             <Grid>
                 <Grid.ColumnDefinitions>
